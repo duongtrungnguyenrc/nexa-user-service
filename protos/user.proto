@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+    rpc FindCredentials (FindCredentialsPayload) returns (Credentials) {}
+}
+
+message FindCredentialsPayload {
+    optional string userName = 1;
+    optional string email = 2;
+    optional string id = 3;
+}
+
+message Credentials {
+    string id = 1;
+    string userName = 2;
+    string email = 3;
+    string password = 4;
+}
