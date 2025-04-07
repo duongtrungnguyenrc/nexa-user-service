@@ -1,3 +1,3 @@
-export * from './protos';
-export * from './user.module';
-export * from './user.service';
+export * from "./user.module";
+export * from "./user.service";
+export * from "./models";

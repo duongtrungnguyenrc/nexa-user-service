@@ -1,28 +1,16 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Injectable } from "@nestjs/common";
+import { Repository } from "typeorm";
 
-import {
-  FindCredentialsPayload,
-  USER_SERVICE_NAME,
-  UserServiceClient,
-} from '@user';
-import { lastValueFrom } from 'rxjs';
+import { UserCredentialDto } from "@auth";
+
+import { UserEntity } from "./models";
 
 @Injectable()
-export class UserService implements OnModuleInit {
-  private userService: UserServiceClient;
+export class UserService {
+  constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>) {}
 
-  constructor(@Inject(USER_SERVICE_NAME) private userClient: ClientGrpc) {}
-
-  onModuleInit() {
-    this.userService = this.userClient.getService('UserService');
-
-    this.getCredential({ email: 'duongtrungnguyenrc@gmail.com' });
-  }
-
-  async getCredential(request: FindCredentialsPayload) {
-    const data = await lastValueFrom(this.userService.findCredentials(request));
-    console.log(data);
-    return data;
+  findUserCredential(email: string): Promise<UserCredentialDto> {
+    return this.userRepository.findOne({ where: { email: email }, select: ["id", "email", "passwordHash"] });
   }
 }
